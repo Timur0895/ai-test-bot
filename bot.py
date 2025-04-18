@@ -89,7 +89,10 @@ def main() -> None:
     application = ApplicationBuilder().token(TOKEN).build()
 
     conv_handler = ConversationHandler(
-        entry_points=[CommandHandler("start", start)],
+        entry_points=[
+            CommandHandler("start", start),
+            MessageHandler(filters.Regex("^🧠 Новый тест$") & ~filters.COMMAND, start)
+        ],            
         states={
             PROFILE: [
                 MessageHandler(
