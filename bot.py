@@ -1,4 +1,7 @@
 import logging
+import threading
+import http.server
+import socketserver
 from telegram import Update, ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import (
     ApplicationBuilder,
@@ -84,6 +87,16 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
 def main() -> None:
     logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
+
+    # Запускаем фейковый сервер для Render (чтобы не ругался на отсутствие порта)
+    def fake_web_server():
+        PORT = 10000
+        Handler = http.server.SimpleHTTPRequestHandler
+        with socketserver.TCPServer(("", PORT), Handler) as httpd:
+            httpd.serve_forever()
+
+    threading.Thread(target=fake_web_server, daemon=True).start()
+
 
     TOKEN = os.getenv("TELEGRAM_TOKEN")  # Замените на свой
     application = ApplicationBuilder().token(TOKEN).build()
