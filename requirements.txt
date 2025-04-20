@@ -1,6 +1,6 @@
 ﻿python-telegram-bot
 python-dotenv
-openai
+openai==0.28
 gspread
 oauth2client
 httpx
